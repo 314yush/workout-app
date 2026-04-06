@@ -1,0 +1,23 @@
+:root {
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f5f6f8;
+  --color-text-primary: #121212;
+  --color-text-secondary: #5a5f6a;
+  --color-text-tertiary: #8f95a3;
+  --color-border-secondary: #cfd5df;
+  --color-border-tertiary: #e3e7ee;
+  --border-radius-md: 10px;
+  --border-radius-lg: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: #f0f2f5;
+  color: var(--color-text-primary);
+}
