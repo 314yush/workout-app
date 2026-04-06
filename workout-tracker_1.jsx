@@ -162,7 +162,14 @@ const workoutData = [
 ];
 
 const STORAGE_KEY = "workout-log-data";
-const API_BASE_URL = (typeof window !== "undefined" && window.__WORKOUT_API_BASE_URL) || "http://localhost:4000";
+const API_BASE_URL =
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_WORKOUT_API_BASE_URL) ||
+  (typeof window !== "undefined" && window.__WORKOUT_API_BASE_URL) ||
+  "http://localhost:4000";
+const API_KEY =
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_WORKOUT_API_KEY) ||
+  (typeof window !== "undefined" && window.__WORKOUT_API_KEY) ||
+  "";
 function getToday() { return DAYS[new Date().getDay()]; }
 function dateKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
 function formatDate(key) { const [y,m,d] = key.split("-").map(Number); return `${MONTHS[m-1]} ${d}, ${y}`; }
@@ -183,16 +190,21 @@ function sessionsToLogs(sessions) {
 }
 
 async function loadSessionsFromApi() {
-  const res = await fetch(`${API_BASE_URL}/sessions`);
+  const headers = API_KEY ? { "x-api-key": API_KEY } : {};
+  const res = await fetch(`${API_BASE_URL}/sessions`, { headers });
   if (!res.ok) throw new Error("Failed to fetch sessions");
   const data = await res.json();
   return sessionsToLogs(data?.sessions || []);
 }
 
 async function saveSessionToApi(payload) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...(API_KEY ? { "x-api-key": API_KEY } : {}),
+  };
   const res = await fetch(`${API_BASE_URL}/sessions`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error("Failed to save session");
